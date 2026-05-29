@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+/test-results/
+/playwright-report/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/dist/
+
+# local generated artifacts
+/.venv*/
+/.cloak-formula-profile/
+/media/
+/tools/
+/dialog.txt
+/*-local-command-*.txt
+
+# misc
+.DS_Store
+*.pem
+tsconfig.tsbuildinfo
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env

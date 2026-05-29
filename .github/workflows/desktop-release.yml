@@ -1,0 +1,68 @@
+name: Desktop Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v1.1.0-desktop"
+        required: true
+        default: "v1.1.0-desktop"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate and build web app
+        run: npm run build
+
+      - name: Build portable desktop app
+        run: npm run desktop:build
+
+      - name: Package portable ZIP
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path src-tauri/target/release/portable
+          Copy-Item src-tauri/target/release/mathlab.exe src-tauri/target/release/portable/MathLab.exe
+          Compress-Archive -Path src-tauri/target/release/portable/MathLab.exe -DestinationPath src-tauri/target/release/portable/MathLab_1.1.0_x64_portable.zip -Force
+
+      - name: Create release and upload portable ZIP
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          name: MathLab Desktop ${{ github.event.inputs.tag }}
+          draft: false
+          prerelease: false
+          body: |
+            ## MathLab Desktop
+
+            A portable Windows desktop build of the Chinese high-school math competition learning platform.
+
+            ### What's included
+            - Refined learning UI with polished topic/problem browsing.
+            - Problem-page right sidebar with a lightweight math companion and challenge prompts.
+            - Cleaner solution presentation that avoids leaking noisy raw solution numbering.
+            - Hardened content formatting for fill-in blanks and LaTeX math.
+
+            ### How to run
+            Download `MathLab_1.1.0_x64_portable.zip`, unzip it, then double-click `MathLab.exe`.
+          files: src-tauri/target/release/portable/*.zip

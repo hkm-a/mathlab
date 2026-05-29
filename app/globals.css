@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-rgb: 247, 248, 251;
+  --primary-color: #2563eb;
+  --secondary-color: #7c3aed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background:
+    radial-gradient(circle at 20% 0%, rgba(37, 99, 235, 0.08), transparent 28rem),
+    radial-gradient(circle at 80% 10%, rgba(124, 58, 237, 0.08), transparent 26rem),
+    rgb(var(--background-rgb));
+  font-family: 'Noto Serif SC', 'PingFang SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
+}
+
+.katex {
+  font-size: 1.18em;
+  font-weight: 400;
+  color: #0f172a;
+}
+
+.katex-display {
+  margin: 1.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.katex .katex-html {
+  white-space: normal;
+}
+
+.katex .base {
+  line-height: 1.6;
+}
+
+.katex .mord {
+  font-family: 'KaTeX_Main', 'Noto Serif SC', serif;
+}
+
+.katex .mathnormal {
+  font-family: 'KaTeX_Math', 'Noto Serif SC', serif;
+}
+
+.katex .mathrm {
+  font-family: 'KaTeX_Main', 'Noto Serif SC', serif;
+}
+
+.katex .mathit {
+  font-family: 'KaTeX_Math', 'Noto Serif SC', serif;
+  font-style: italic;
+}
+
+.katex .mathbf {
+  font-family: 'KaTeX_Main', 'Noto Serif SC', serif;
+  font-weight: bold;
+}
+
+.katex .amsrm {
+  font-family: 'KaTeX_AMS', 'Noto Serif SC', serif;
+}
+
+.katex .amsb {
+  font-family: 'KaTeX_AMS', 'Noto Serif SC', serif;
+  font-weight: bold;
+}
+
+.katex .mathcal {
+  font-family: 'KaTeX_Caligraphic', serif;
+}
+
+.katex .mathbb {
+  font-family: 'KaTeX_SansSerif', sans-serif;
+}
+
+.katex .mathtt {
+  font-family: 'KaTeX_Typewriter', monospace;
+}
+
+.katex .size1 { font-size: 1.2em; }
+.katex .size2 { font-size: 1.4em; }
+.katex .size3 { font-size: 1.6em; }
+.katex .size4 { font-size: 1.8em; }
+
+.katex-display .frac {
+  margin: 0.2em 0;
+}
+
+.katex-display .sqrt {
+  padding: 0.1em 0;
+}
+
+/* Prevent KaTeX overflow inside line-clamped containers */
+[class*="line-clamp"] .katex {
+  font-size: 1em;
+}
