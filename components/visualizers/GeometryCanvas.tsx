@@ -69,7 +69,7 @@ export default function GeometryCanvas({
   }, [canvasWidth, canvasHeight, dpr])
 
   return (
-    <div ref={containerRef} className="bg-surface rounded-lg overflow-hidden border border-surface/50 w-full">
+    <div ref={containerRef} className="mx-auto w-full max-w-[500px] overflow-hidden rounded-lg border border-surface/50 bg-surface">
       <canvas ref={canvasRef} role="img" aria-label="几何图形可视化" className="block max-w-full" />
     </div>
   )

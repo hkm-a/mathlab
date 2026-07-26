@@ -60,7 +60,7 @@ export default async function ProblemPage({ params }: ProblemPageProps) {
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-4">可视化演示</h2>
           <Card>
-            <ProblemVisualization problemId={problem.id} visualization={problem.visualization} />
+            <ProblemVisualization visualization={problem.visualization} />
           </Card>
         </div>
       )}

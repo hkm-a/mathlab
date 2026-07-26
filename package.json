@@ -9,7 +9,7 @@
     "validate:ui": "tsx scripts/validate-ui-contract.ts",
     "validate:static-export": "tsx scripts/validate-static-export.ts",
     "validate:release": "tsx scripts/validate-release-package.ts",
-    "test": "tsx lib/data/content-format.test.ts && tsx lib/data/problem-content.test.ts && tsx lib/data/solution-steps.test.ts && tsx scripts/validate-data.test.ts",
+    "test": "tsx lib/data/content-format.test.ts && tsx lib/data/problem-content.test.ts && tsx lib/data/problem-visualizations.test.ts && tsx lib/data/solution-steps.test.ts && tsx scripts/validate-data.test.ts",
     "build": "npm run test && npm run validate:data && npm run validate:ui && npm run validate:static-export && npm run validate:release && next build",
     "start": "next start",
     "tauri": "tauri",

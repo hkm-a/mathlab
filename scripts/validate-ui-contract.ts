@@ -2,7 +2,9 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
 import { problems } from "../lib/data/problems"
 import { getProblemDisplayTitle } from "../lib/data/problemDisplay"
+import { visualizationByProblemId } from "../lib/data/problem-visualizations"
 import { topics, categories } from "../lib/data/topics"
+import { inequalityVisualizationPresets, visualizationTypes } from "../lib/data/types"
 
 const root = process.cwd()
 
@@ -45,7 +47,7 @@ const checks: Array<{ file: string; tokens: string[] }> = [
   },
   {
     file: "components/visualizers/ProblemVisualization.tsx",
-    tokens: ["JensenViz", "CauchyViz", "ThreeAmGmViz", "ineq-jensen-1", "ineq-cauchy-1", "ineq-amgm-2"],
+    tokens: ["JensenViz", "CauchyViz", "ThreeAmGmViz", "InequalityViz", "assertNever"],
   },
   {
     file: "components/visualizers/InequalityViz.tsx",
@@ -115,6 +117,53 @@ for (const check of checks) {
     if (!source.includes(token)) {
       failures.push(`${check.file} missing ${token}`)
     }
+  }
+}
+
+const visualizationSource = readFileSync(join(root, "components/visualizers/ProblemVisualization.tsx"), "utf8")
+
+for (const [problemId, expectedVisualization] of Object.entries(visualizationByProblemId)) {
+  const problem = problems.find((item) => item.id === problemId)
+
+  if (!problem) {
+    failures.push(`可视化映射引用了不存在的题目：${problemId}`)
+    continue
+  }
+
+  if (JSON.stringify(problem.visualization) !== JSON.stringify(expectedVisualization)) {
+    failures.push(`可视化映射未进入最终题目数据：${problemId}`)
+  }
+}
+
+for (const type of visualizationTypes) {
+  const reachableProblem = problems.find((problem) => problem.visualization?.type === type)
+
+  if (!reachableProblem) {
+    failures.push(`没有真实题目可触达可视化类型：${type}`)
+  }
+
+  if (!visualizationSource.includes(`case "${type}"`)) {
+    failures.push(`可视化类型缺少渲染分支：${type}`)
+  }
+}
+
+for (const preset of inequalityVisualizationPresets) {
+  const reachableProblem = problems.find(
+    (problem) => problem.visualization?.type === "inequality" && problem.visualization.preset === preset,
+  )
+
+  if (!reachableProblem) {
+    failures.push(`没有真实题目可触达不等式预设：${preset}`)
+  }
+
+  if (!visualizationSource.includes(`case "${preset}"`)) {
+    failures.push(`不等式预设缺少渲染分支：${preset}`)
+  }
+}
+
+for (const forbidden of ["ineq-jensen-1", "ineq-cauchy-1", "ineq-amgm-2", "正在开发中", "problemId:"]) {
+  if (visualizationSource.includes(forbidden)) {
+    failures.push(`可视化入口仍包含不可达或占位逻辑：${forbidden}`)
   }
 }
 
