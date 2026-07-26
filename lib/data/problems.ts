@@ -5,14 +5,21 @@ import { problems_chthoughts } from "./problems-ch-thoughts"
 import { problems_chmethods } from "./problems-ch-methods"
 import { problems_chexam } from "./problems-ch-exam"
 import { problems_chexamples } from "./problems-ch-examples"
+import { withExtractedEmbeddedSolution } from "./problem-content"
+import { withDerivedSolutionSteps } from "./solution-steps"
 
-export const problems: Problem[] = [
+const sourceProblems: Problem[] = [
   ...problems_chstrategy,
   ...problems_chthoughts,
   ...problems_chmethods,
   ...problems_chexam,
   ...problems_chexamples,
 ]
+
+export const problems: Problem[] = sourceProblems.map(withExtractedEmbeddedSolution).map((problem) => ({
+  ...problem,
+  solutions: problem.solutions.map(withDerivedSolutionSteps),
+}))
 
 const problemById = new Map(problems.map((p) => [p.id, p]))
 

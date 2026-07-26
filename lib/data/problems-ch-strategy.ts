@@ -2948,13 +2948,6 @@ D. \${AC} = {BC}$
     difficulty: "medium",
     solutions: [
       {
-        id: "prob-sec-1-6-2-sol-0",
-        title: `解法1`,
-        method: "geometric",
-        steps: [],
-        explanation: `本题表述简洁清晰,灵活考查了平面向量基本定理、平面向量坐标表示、平面向量的数量积、平面向量的几何意义等知识,渗透了多种数学思想方法,我们可以从多个视角来解决.`,
-      },
-      {
         id: "prob-sec-1-6-2-sol-1",
         title: `解法一`,
         method: "standard",

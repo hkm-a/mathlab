@@ -10,6 +10,8 @@ export type ContentBlock =
 const optionMarkerPattern = /(^|[\s\n，,；;：:])(?:[（(]?([A-HＡ-Ｈ])[)）.．]\s*)/g
 const circledOptionPattern = /(^|[\s\n，,；;：:])([①-⑳])\s*/g
 const mathDelimiterPattern = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|\$[^$\n]+\$)/g
+const rawMathTextPattern = /[\p{Script=Han}，。；：、（）]+/uy
+const circledNumberMap = new Map(Array.from("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳", (value, index) => [value, String(index + 1)]))
 
 function normalizeOptionLabel(label: string): string {
   const fullWidthStart = "Ａ".charCodeAt(0)
@@ -156,4 +158,47 @@ export function normalizeContentSignature(content: string): string {
     .replace(/[，。,.；;：:、]/g, "")
     .replace(/[（）()]/g, "")
     .toLowerCase()
+}
+
+/**
+ * 将公式中的中文说明转为 KaTeX 文本节点，并把圈号转换为稳定的数字标签。
+ * 已位于 `\text{}` 中的内容保持不变，避免生成嵌套文本命令。
+ */
+export function normalizeMathSource(content: string): string {
+  const source = Array.from(content, (character) => circledNumberMap.get(character) ?? character).join("")
+  let result = ""
+  let index = 0
+
+  while (index < source.length) {
+    const textCommand = source.slice(index).match(/^\\text\s*\{/)
+
+    if (textCommand) {
+      let depth = 1
+      let end = index + textCommand[0].length
+
+      while (end < source.length && depth > 0) {
+        if (source[end] === "{" && source[end - 1] !== "\\") depth += 1
+        if (source[end] === "}" && source[end - 1] !== "\\") depth -= 1
+        end += 1
+      }
+
+      result += source.slice(index, end)
+      index = end
+      continue
+    }
+
+    rawMathTextPattern.lastIndex = index
+    const match = rawMathTextPattern.exec(source)
+
+    if (match) {
+      result += `\\text{${match[0]}}`
+      index = rawMathTextPattern.lastIndex
+      continue
+    }
+
+    result += source[index]
+    index += 1
+  }
+
+  return result
 }

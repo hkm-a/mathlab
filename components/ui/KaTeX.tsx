@@ -3,7 +3,7 @@
 import Image from "next/image"
 import React from "react"
 import katex from "katex"
-import { splitContentBlocks } from "@/lib/data/content-format"
+import { normalizeMathSource, splitContentBlocks } from "@/lib/data/content-format"
 import "katex/dist/katex.min.css"
 
 interface KaTeXProps {
@@ -31,7 +31,7 @@ function shouldRenderStructuredDisplay(content: string) {
 
 
 function renderMath(math: string, displayMode: boolean) {
-  return katex.renderToString(math, {
+  return katex.renderToString(normalizeMathSource(math), {
     throwOnError: false,
     displayMode,
   })

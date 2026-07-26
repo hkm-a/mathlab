@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 
-import { formatProblemPreview, splitContentBlocks } from "./content-format"
+import { formatProblemPreview, normalizeMathSource, splitContentBlocks } from "./content-format"
 
 assert.deepEqual(splitContentBlocks("第一行\n第二行"), [
   { type: "paragraph", content: "第一行" },
@@ -43,3 +43,10 @@ assert.deepEqual(splitContentBlocks(String.raw`填空 \_\_，公式 $$\lambda_{i
 assert.deepEqual(splitContentBlocks(String.raw`填空 \_\_，公式 \[\lambda_{i}\] 不应被改写。`), [
   { type: "paragraph", content: String.raw`填空 __，公式 \[\lambda_{i}\] 不应被改写。` },
 ])
+
+assert.equal(normalizeMathSource(String.raw`x且y`), String.raw`x\text{且}y`)
+assert.equal(normalizeMathSource(String.raw`\text{当} x>0`), String.raw`\text{当} x>0`)
+assert.equal(normalizeMathSource(String.raw`S_{四边形}`), String.raw`S_{\text{四边形}}`)
+assert.equal(normalizeMathSource(String.raw`A、B`), String.raw`A\text{、}B`)
+assert.equal(normalizeMathSource(String.raw`x=1\tag{②}`), String.raw`x=1\tag{2}`)
+assert.equal(normalizeMathSource(String.raw`x=20\tag{⑳}`), String.raw`x=20\tag{20}`)

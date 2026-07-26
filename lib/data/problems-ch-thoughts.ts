@@ -2281,13 +2281,6 @@ D. 4`,
     difficulty: "medium",
     solutions: [
       {
-        id: "prob-sec-2-3-8-sol-0",
-        title: `解法1`,
-        method: "standard",
-        steps: [],
-        explanation: `本题是关于函数、方程解的选择题,考查换元法及方程根的讨论,属一题多选型试题,要求考生具有较强的分析问题和解决问题的能力.`,
-      },
-      {
         id: "prob-sec-2-3-8-sol-1",
         title: `解法一`,
         method: "standard",
@@ -3547,13 +3540,6 @@ $(x-2)^{2}+(y-\\sqrt{3})^{2}=4$ , 交 x 轴于点 $M_{1}(1,0)$ , $M_{2}(3,0)$ ,
 从而 $\\overrightarrow{MP}\\cdot\\overrightarrow{MQ}=-\\frac{12k}{m}-3+\\frac{12k}{m}+3=0,$
 
 故恒有 $\\overrightarrow{MP}\\perp\\overrightarrow{MQ}$ ，即存在定点 $M(1,0)$ ，使得以PQ为直径的圆恒过定点M.`,
-      },
-      {
-        id: "prob-sec-2-4-7-sol-5",
-        title: `解法二`,
-        method: "standard",
-        steps: [],
-        explanation: `直接假设点 $P$ 存在,依据条件得出点 $P$ 的坐标.但在动直线有两个参变量的前提下进行推理运算,显然需要较强的技巧,很多学生是无法完成的.`,
       },
     ],
     tags: [],
