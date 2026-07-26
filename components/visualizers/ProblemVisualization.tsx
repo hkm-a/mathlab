@@ -9,8 +9,13 @@ import ThreeAmGmViz from "@/components/visualizers/ThreeAmGmViz"
 import type { FunctionState, GeometryState, VisualizationConfig } from "@/lib/data/types"
 
 interface ProblemVisualizationProps {
-  problemId: string
   visualization: VisualizationConfig
+}
+
+type InequalityVisualizationConfig = Extract<VisualizationConfig, { type: "inequality" }>
+
+function assertNever(value: never): never {
+  throw new Error(`缺少可视化渲染器：${JSON.stringify(value)}`)
 }
 
 function GeometryVisualization({ state }: { state: GeometryState }) {
@@ -19,44 +24,47 @@ function GeometryVisualization({ state }: { state: GeometryState }) {
   const circles = state.circles ?? []
 
   return (
-    <GeometryCanvas
-      onDraw={(ctx, size) => {
-        const scale = Math.min(size.width / 10, size.height / 8)
+    <>
+      <p className="mb-4 text-sm text-slate-500">观察圆、切线与关键点的位置关系。</p>
+      <GeometryCanvas
+        onDraw={(ctx, size) => {
+          const scale = Math.min(size.width / 10, size.height / 8)
 
-        ctx.save()
-        ctx.translate(size.width / 2, size.height / 2)
-        ctx.scale(scale, -scale)
-
-        circles.forEach((circle) => {
           ctx.save()
-          ctx.scale(1, -1)
-          ctx.beginPath()
-          ctx.strokeStyle = "#3b82f6"
-          ctx.lineWidth = 2 / scale
-          ctx.arc(circle.center.x, -circle.center.y, circle.radius, 0, Math.PI * 2)
-          ctx.stroke()
+          ctx.translate(size.width / 2, size.height / 2)
+          ctx.scale(scale, -scale)
+
+          circles.forEach((circle) => {
+            ctx.save()
+            ctx.scale(1, -1)
+            ctx.beginPath()
+            ctx.strokeStyle = "#3b82f6"
+            ctx.lineWidth = 2 / scale
+            ctx.arc(circle.center.x, -circle.center.y, circle.radius, 0, Math.PI * 2)
+            ctx.stroke()
+            ctx.restore()
+          })
+
+          lines.forEach((line) => {
+            ctx.beginPath()
+            ctx.strokeStyle = "#8b5cf6"
+            ctx.lineWidth = 3 / scale
+            ctx.moveTo(line.p1.x, line.p1.y)
+            ctx.lineTo(line.p2.x, line.p2.y)
+            ctx.stroke()
+          })
+
+          points.forEach((point) => {
+            ctx.beginPath()
+            ctx.fillStyle = "#06b6d4"
+            ctx.arc(point.x, point.y, 5 / scale, 0, Math.PI * 2)
+            ctx.fill()
+          })
+
           ctx.restore()
-        })
-
-        lines.forEach((line) => {
-          ctx.beginPath()
-          ctx.strokeStyle = "#8b5cf6"
-          ctx.lineWidth = 3 / scale
-          ctx.moveTo(line.p1.x, line.p1.y)
-          ctx.lineTo(line.p2.x, line.p2.y)
-          ctx.stroke()
-        })
-
-        points.forEach((point) => {
-          ctx.beginPath()
-          ctx.fillStyle = "#06b6d4"
-          ctx.arc(point.x, point.y, 5 / scale, 0, Math.PI * 2)
-          ctx.fill()
-        })
-
-        ctx.restore()
-      }}
-    />
+        }}
+      />
+    </>
   )
 }
 
@@ -76,46 +84,47 @@ function FunctionVisualization({ state }: { state: FunctionState }) {
   const entry = functionLibrary[state.functionKey ?? "quadratic"] ?? functionLibrary.quadratic
 
   return (
-    <FunctionPlotter
-      range={range}
-      functions={[entry]}
-    />
+    <>
+      <p className="mb-4 text-sm text-slate-500">观察函数图像与题设约束的关系。</p>
+      <FunctionPlotter
+        range={range}
+        functions={[entry]}
+      />
+    </>
   )
 }
 
-export default function ProblemVisualization({ problemId, visualization }: ProblemVisualizationProps) {
-  if (problemId === "ineq-cauchy-1") {
-    return <CauchyViz />
-  }
+function InequalityVisualization({ visualization }: { visualization: InequalityVisualizationConfig }) {
+  const preset = visualization.preset
 
-  if (problemId === "ineq-jensen-1") {
-    return <JensenViz />
+  switch (preset) {
+    case "amgm-2":
+      return (
+        <>
+          <p className="mb-4 text-sm text-slate-500">调整参数，观察算术平均与几何平均的关系：</p>
+          <InequalityViz type="amgm-2" initialState={visualization.initialState} />
+        </>
+      )
+    case "amgm-3":
+      return <ThreeAmGmViz />
+    case "cauchy":
+      return <CauchyViz />
+    case "jensen":
+      return <JensenViz />
+    default:
+      return assertNever(preset)
   }
+}
 
-  if (problemId === "ineq-amgm-2") {
-    return <ThreeAmGmViz />
+export default function ProblemVisualization({ visualization }: ProblemVisualizationProps) {
+  switch (visualization.type) {
+    case "inequality":
+      return <InequalityVisualization visualization={visualization} />
+    case "geometry":
+      return <GeometryVisualization state={visualization.initialState} />
+    case "function":
+      return <FunctionVisualization state={visualization.initialState} />
+    default:
+      return assertNever(visualization)
   }
-
-  if (visualization.type === "inequality") {
-    return (
-      <>
-        <p className="mb-4 text-sm text-slate-500">调整参数，观察不等式的几何意义：</p>
-        <InequalityViz
-          type="amgm-2"
-          initialState={visualization.initialState}
-        />
-      </>
-    )
-  }
-
-  if (visualization.type === "geometry") {
-    return <GeometryVisualization state={visualization.initialState} />
-  }
-
-  if (visualization.type === "function") {
-    return <FunctionVisualization state={visualization.initialState} />
-  }
-
-  // vector / transformation — placeholder until visualizers are built
-  return <p className="text-sm text-slate-500">此可视化类型正在开发中。</p>
 }

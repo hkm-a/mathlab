@@ -92,6 +92,14 @@ export interface InequalityState {
   c?: number
 }
 
+export const visualizationTypes = ["function", "geometry", "inequality"] as const
+
+export type VisualizationType = (typeof visualizationTypes)[number]
+
+export const inequalityVisualizationPresets = ["amgm-2", "amgm-3", "cauchy", "jensen"] as const
+
+export type InequalityVisualizationPreset = (typeof inequalityVisualizationPresets)[number]
+
 export interface FunctionState {
   range?: PlotRange
   functionKey?: string
@@ -103,26 +111,13 @@ export interface GeometryState {
   lines?: Line[]
 }
 
-export interface VectorState {
-  vectors: { x: number; y: number; label: string; color: string }[]
-  showProjection?: boolean
-  showAngle?: boolean
-}
-
-export interface TransformationState {
-  type: "affine" | "homothety" | "rotation" | "reflection"
-  params: Record<string, number>
-}
-
 export type VisualizationConfig =
   | { type: "function"; initialState: FunctionState }
   | { type: "geometry"; initialState: GeometryState }
-  | { type: "inequality"; initialState: InequalityState }
-  | { type: "vector"; initialState: VectorState }
-  | { type: "transformation"; initialState: TransformationState }
+  | { type: "inequality"; preset: InequalityVisualizationPreset; initialState?: InequalityState }
 
 export interface VisualizationStep {
-  type: VisualizationConfig["type"]
+  type: VisualizationType
   data: Record<string, unknown>
   description?: string
 }

@@ -180,7 +180,7 @@ export default function ThreeAmGmViz() {
         </div>
       )}
 
-      <div ref={containerRef} className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
+      <div ref={containerRef} className="mx-auto w-full max-w-[720px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
         <canvas ref={canvasRef} role="img" aria-label="三元 AM-GM 柱状图与均衡化可视化" className="block max-w-full" />
       </div>
 

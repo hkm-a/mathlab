@@ -173,7 +173,7 @@ export default function JensenViz() {
         </div>
       )}
 
-      <div ref={containerRef} className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
+      <div ref={containerRef} className="mx-auto w-full max-w-[720px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
         <canvas ref={canvasRef} role="img" aria-label="Jensen 不等式凸函数可视化" className="block max-w-full" />
       </div>
 

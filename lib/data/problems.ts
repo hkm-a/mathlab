@@ -6,6 +6,7 @@ import { problems_chmethods } from "./problems-ch-methods"
 import { problems_chexam } from "./problems-ch-exam"
 import { problems_chexamples } from "./problems-ch-examples"
 import { withExtractedEmbeddedSolution } from "./problem-content"
+import { withProblemVisualization } from "./problem-visualizations"
 import { withDerivedSolutionSteps } from "./solution-steps"
 
 const sourceProblems: Problem[] = [
@@ -16,10 +17,13 @@ const sourceProblems: Problem[] = [
   ...problems_chexamples,
 ]
 
-export const problems: Problem[] = sourceProblems.map(withExtractedEmbeddedSolution).map((problem) => ({
-  ...problem,
-  solutions: problem.solutions.map(withDerivedSolutionSteps),
-}))
+export const problems: Problem[] = sourceProblems
+  .map(withExtractedEmbeddedSolution)
+  .map(withProblemVisualization)
+  .map((problem) => ({
+    ...problem,
+    solutions: problem.solutions.map(withDerivedSolutionSteps),
+  }))
 
 const problemById = new Map(problems.map((p) => [p.id, p]))
 
